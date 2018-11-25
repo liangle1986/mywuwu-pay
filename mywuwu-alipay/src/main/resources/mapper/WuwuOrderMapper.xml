@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mywuwu.dao.WuwuOrderMapper">
+  <resultMap id="BaseResultMap" type="com.mywuwu.entity.WuwuOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="order_remark" jdbcType="VARCHAR" property="orderRemark" />
+    <result column="reorder_id" jdbcType="VARCHAR" property="reorderId" />
+    <result column="otherGood_id" jdbcType="VARCHAR" property="othergoodId" />
+    <result column="img_id" jdbcType="VARCHAR" property="imgId" />
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+    <result column="order_type" jdbcType="INTEGER" property="orderType" />
+    <result column="pay_Type" jdbcType="INTEGER" property="payType" />
+    <result column="order_No" jdbcType="VARCHAR" property="orderNo" />
+  </resultMap>
+</mapper>

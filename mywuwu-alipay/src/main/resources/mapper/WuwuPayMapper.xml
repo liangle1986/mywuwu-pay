@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mywuwu.dao.WuwuPayMapper">
+  <resultMap id="BaseResultMap" type="com.mywuwu.entity.WuwuPay">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="pay_Status" jdbcType="INTEGER" property="payStatus" />
+    <result column="mypay_code" jdbcType="VARCHAR" property="mypayCode" />
+    <result column="reDateTime" jdbcType="TIMESTAMP" property="redatetime" />
+    <result column="pay_Type" jdbcType="INTEGER" property="payType" />
+    <result column="pay_code" jdbcType="VARCHAR" property="payCode" />
+    <result column="pay_account" jdbcType="VARCHAR" property="payAccount" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="pay_money" jdbcType="VARCHAR" property="payMoney" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+
+    id, pay_Status, mypay_code, reDateTime, pay_Type, pay_code, pay_account, user_id, pay_money,remark
+  </sql>
+
+  <!--查询支付记录-->
+  <select id="selectByPayCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from wuwu_pay
+    where mypay_code = #{code,jdbcType=VARCHAR}
+  </select>
+
+</mapper>
