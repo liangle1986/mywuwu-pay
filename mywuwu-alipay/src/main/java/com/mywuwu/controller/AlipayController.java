@@ -2,16 +2,24 @@ package com.mywuwu.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.*;
+import com.alipay.api.request.AlipayOpenAuthTokenAppQueryRequest;
+import com.alipay.api.request.AlipayOpenAuthTokenAppRequest;
+import com.alipay.api.response.AlipayOpenAuthTokenAppQueryResponse;
+import com.alipay.api.response.AlipayOpenAuthTokenAppResponse;
 import com.mywuwu.common.config.AlipayConfig;
 import com.mywuwu.common.config.AlipayConfig1;
 import com.mywuwu.dto.AjaxResult;
 import com.mywuwu.service.IAlipayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Date;
 
@@ -218,12 +226,38 @@ public class AlipayController {
 
 
     @GetMapping("aliGetToken")
-    public String aliGetToken(){
+    public void aliGetToken(HttpServletResponse response) throws IOException {
 //        alipayService.aliGetToken();
+        AjaxResult result = new AjaxResult();
+        result.setCode("10000");
+        result.setData("alipays://platformapi/startapp?appId=" + AlipayConfig.APPID + "&url=" + AlipayConfig.login_app_url);
 //        return "<a href=\"alipays://platformapi/startapp?appId=" + AlipayConfig.APPID + "&url=" +  URLEncoder.encode("https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&scope=auth_user&redirect_uri=http://www.ywuwu.com")+"\">点击此处拉起支付宝进行授权+"+URLEncoder.encode("https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&scope=auth_user&redirect_uri=http://www.ywuwu.com")+"</a>";
 //        return "https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&redirect_uri="+ URLEncoder.encode("http://www.ywuwu.com");
-        return "<a href=\"alipays://platformapi/startapp?appId=" + AlipayConfig.APPID + "&url=" + AlipayConfig.login_app_url+"\">点击此处拉起支付宝进行授权+"+URLEncoder.encode("https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&scope=auth_user&redirect_uri=http://www.ywuwu.com")+"</a>";
+//                "<a href=\"alipays://platformapi/startapp?appId=" + AlipayConfig.APPID + "&url=" + AlipayConfig.login_app_url+"\">点击此处拉起支付宝进行授权+"+URLEncoder.encode("https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&scope=auth_user&redirect_uri=http://www.ywuwu.com")+"</a>";
+        response.sendRedirect(AlipayConfig.login_app_url);
 //        return AlipayConfig.login_app_url;
     }
 
+    @GetMapping("alipayToken")
+    public void alipayToken(){
+        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.URL, AlipayConfig.APPID, AlipayConfig.RSA_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
+        AlipayOpenAuthTokenAppRequest request = new AlipayOpenAuthTokenAppRequest();
+        request.setBizContent("{" +
+                "    \"grant_type\":\"authorization_code\"," +
+                "    \"code\":\"57714da678ff4c8b905b6cfc19f7fX65\"" +
+                "  }");
+        try {
+            AlipayOpenAuthTokenAppResponse response = alipayClient.execute(request);
+            System.out.println(response.getUserId());
+//            AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", APP_ID, APP_PRIVATE_KEY, "json", CHARSET, ALIPAY_PUBLIC_KEY, "RSA2");
+            AlipayOpenAuthTokenAppQueryRequest requestt = new AlipayOpenAuthTokenAppQueryRequest();
+            requestt.setBizContent("{" +
+                    "    \"app_auth_token\":'" + response.getAppAuthToken() +
+                    "'  }");
+            AlipayOpenAuthTokenAppQueryResponse qresponse = alipayClient.execute(requestt);
+            System.out.println(qresponse.getBody());
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -38,5 +38,5 @@ public class AlipayConfig {
 
     //三方登录授权url https://openauth.alipaydev.com/oauth2/appToAppAuth.htm
     public static String login_url = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=" + AlipayConfig.APPID + "&scope=auth_user&redirect_uri=" + AlipayConfig.return_url + "&state=init";
-    public static String login_app_url = "https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id=" + AlipayConfig.APPID + "&scope=auth_user&redirect_uri=" + AlipayConfig.return_url + "&state=init";
+    public static String login_app_url = "https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=" + AlipayConfig.APPID + "&scope=auth_user&redirect_uri=" + AlipayConfig.return_url + "&state=init";
 }
