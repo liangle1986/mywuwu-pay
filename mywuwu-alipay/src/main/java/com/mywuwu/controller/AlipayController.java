@@ -11,6 +11,7 @@ import com.alipay.api.response.AlipayOpenAuthTokenAppQueryResponse;
 import com.alipay.api.response.AlipayOpenAuthTokenAppResponse;
 import com.mywuwu.common.config.AlipayConfig;
 import com.mywuwu.common.config.AlipayConfig1;
+import com.mywuwu.common.util.WuwuCodeUtils;
 import com.mywuwu.dto.AjaxResult;
 import com.mywuwu.service.IAlipayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -226,16 +227,26 @@ public class AlipayController {
 
 
     @GetMapping("aliGetToken")
-    public void aliGetToken(HttpServletResponse response) throws IOException {
+    public AjaxResult aliGetToken(HttpServletRequest request) throws IOException {
 //        alipayService.aliGetToken();
         AjaxResult result = new AjaxResult();
         result.setCode("10000");
-        result.setData("alipays://platformapi/startapp?appId=" + AlipayConfig.APPID + "&url=" + AlipayConfig.login_app_url);
+        //appId=20000067后面这一串数字是固定不是自己的appId否则无法唤起支付宝
+        //https://openauth.alipay.com/auth/tokenManage.htm 去掉支付宝授权
+        //获取访问设备类型
+       if(WuwuCodeUtils.JudgeIsMoblie(request)){
+           result.setData("alipays://platformapi/startapp?appId=20000067&url=" + URLEncoder.encode(AlipayConfig.login_url));
+       } else {
+           result.setData(AlipayConfig.login_url);
+       }
+
+//        console.log(this.$route.query.A);vue获取get后的地址
 //        return "<a href=\"alipays://platformapi/startapp?appId=" + AlipayConfig.APPID + "&url=" +  URLEncoder.encode("https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&scope=auth_user&redirect_uri=http://www.ywuwu.com")+"\">点击此处拉起支付宝进行授权+"+URLEncoder.encode("https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&scope=auth_user&redirect_uri=http://www.ywuwu.com")+"</a>";
 //        return "https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&redirect_uri="+ URLEncoder.encode("http://www.ywuwu.com");
 //                "<a href=\"alipays://platformapi/startapp?appId=" + AlipayConfig.APPID + "&url=" + AlipayConfig.login_app_url+"\">点击此处拉起支付宝进行授权+"+URLEncoder.encode("https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&scope=auth_user&redirect_uri=http://www.ywuwu.com")+"</a>";
-        response.sendRedirect(AlipayConfig.login_app_url);
-//        return AlipayConfig.login_app_url;
+//        response.sendRedirect(AlipayConfig.login_app_url);
+        return result;
+//        return "<a href=\"alipays://platformapi/startapp?appId=20000067&url=" + URLEncoder.encode(AlipayConfig.login_url)+"\">点击此处拉起支付宝进行授权</a>";
     }
 
     @GetMapping("alipayToken")
