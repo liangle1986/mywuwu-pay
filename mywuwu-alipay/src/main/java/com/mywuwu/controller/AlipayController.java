@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -230,15 +232,15 @@ public class AlipayController {
     public AjaxResult aliGetToken(HttpServletRequest request) throws IOException {
 //        alipayService.aliGetToken();
         AjaxResult result = new AjaxResult();
-        result.setCode("10000");
+        result.setCode("0");
         //appId=20000067后面这一串数字是固定不是自己的appId否则无法唤起支付宝
         //https://openauth.alipay.com/auth/tokenManage.htm 去掉支付宝授权
         //获取访问设备类型
-       if(WuwuCodeUtils.JudgeIsMoblie(request)){
-           result.setData("alipays://platformapi/startapp?appId=20000067&url=" + URLEncoder.encode(AlipayConfig.login_url));
-       } else {
-           result.setData(AlipayConfig.login_url);
-       }
+        if (WuwuCodeUtils.JudgeIsMoblie(request)) {
+            result.setData("alipays://platformapi/startapp?appId=20000067&url=" + URLEncoder.encode(AlipayConfig.login_url));
+        } else {
+            result.setData(AlipayConfig.login_url);
+        }
 
 //        console.log(this.$route.query.A);vue获取get后的地址
 //        return "<a href=\"alipays://platformapi/startapp?appId=" + AlipayConfig.APPID + "&url=" +  URLEncoder.encode("https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&scope=auth_user&redirect_uri=http://www.ywuwu.com")+"\">点击此处拉起支付宝进行授权+"+URLEncoder.encode("https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id="+ AlipayConfig.APPID +"&scope=auth_user&redirect_uri=http://www.ywuwu.com")+"</a>";
@@ -249,26 +251,35 @@ public class AlipayController {
 //        return "<a href=\"alipays://platformapi/startapp?appId=20000067&url=" + URLEncoder.encode(AlipayConfig.login_url)+"\">点击此处拉起支付宝进行授权</a>";
     }
 
-    @GetMapping("alipayToken")
-    public void alipayToken(){
+    @GetMapping("alipayTokenUserInfo")
+    public AjaxResult alipayToken(String autoCode) {
+
+        AjaxResult result = new AjaxResult();
+        result.setCode("0");
         AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.URL, AlipayConfig.APPID, AlipayConfig.RSA_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
         AlipayOpenAuthTokenAppRequest request = new AlipayOpenAuthTokenAppRequest();
         request.setBizContent("{" +
                 "    \"grant_type\":\"authorization_code\"," +
-                "    \"code\":\"57714da678ff4c8b905b6cfc19f7fX65\"" +
+                "    \"code\":\"" + autoCode + "\"" +
                 "  }");
         try {
             AlipayOpenAuthTokenAppResponse response = alipayClient.execute(request);
             System.out.println(response.getUserId());
 //            AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", APP_ID, APP_PRIVATE_KEY, "json", CHARSET, ALIPAY_PUBLIC_KEY, "RSA2");
             AlipayOpenAuthTokenAppQueryRequest requestt = new AlipayOpenAuthTokenAppQueryRequest();
-            requestt.setBizContent("{" +
-                    "    \"app_auth_token\":'" + response.getAppAuthToken() +
-                    "'  }");
+            requestt.setBizContent("{" + " \"app_auth_token\":'" + response.getAppAuthToken() + "' }");
             AlipayOpenAuthTokenAppQueryResponse qresponse = alipayClient.execute(requestt);
             System.out.println(qresponse.getBody());
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", "A0001");
+            map.put("name", "ASDFASDF");
+            map.put("url", "https://picsum.photos/200/300/?random");
+            map.put("loginType", "1");
+            result.setData(map);
         } catch (AlipayApiException e) {
             e.printStackTrace();
+            result.setCode("1");
         }
+        return result;
     }
 }

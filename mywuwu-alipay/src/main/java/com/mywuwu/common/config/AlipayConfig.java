@@ -1,5 +1,7 @@
 package com.mywuwu.common.config;
 
+import java.util.Date;
+
 /**
  * 正式环境
  * @Package: com.mywuwu.quartz.pay.alipay
@@ -21,7 +23,7 @@ public class AlipayConfig {
     // 服务器异步通知页面路径 需http://或者https://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
     public static String notify_url = "http://localhost:8088/alipay/alipayNotify";
     // 页面跳转同步通知页面路径 需http://或者https://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问 商户可以自定义同步跳转地址
-    public static String return_url = "http://www.ywuwu.com";
+    public static String return_url = "http://www.ywuwu.com/redirect";
     // 请求网关地址 沙箱：https://openapi.alipaydev.com/gateway.do 网站支付:https://openapi.alipay.com/gateway.do
     public static String URL = "https://openapi.alipay.com/gateway.do";
     // 编码
@@ -37,6 +39,6 @@ public class AlipayConfig {
     public static String SIGNTYPE = "RSA2";
 
     //三方登录授权url https://openauth.alipaydev.com/oauth2/appToAppAuth.htm
-    public static String login_url = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=" + AlipayConfig.APPID + "&scope=auth_user&redirect_uri=" + AlipayConfig.return_url + "&state=init";
+    public static String login_url = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=" + AlipayConfig.APPID + "&scope=auth_user&redirect_uri=" + AlipayConfig.return_url;
     public static String login_app_url = "https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=" + AlipayConfig.APPID + "&redirect_uri=" + AlipayConfig.return_url + "&state=init";
 }
