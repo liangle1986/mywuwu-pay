@@ -14,6 +14,10 @@ import com.mywuwu.common.config.AlipayConfig1;
 import com.mywuwu.common.util.WuwuCodeUtils;
 import com.mywuwu.dto.AjaxResult;
 import com.mywuwu.service.IAlipayService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,6 +33,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
+@Api(tags = "AlipayController", description = "AlipayController | 支付报支付接口调用")
 @RequestMapping("/alipay")
 public class AlipayController {
 
@@ -43,12 +48,15 @@ public class AlipayController {
      * Author: 梁乐乐
      * Date: Created in 2018/5/20 11:07
      */
-
+    @ApiOperation(value="支付宝手机网站支付", notes="支付宝手机网站支付")
+    @ApiImplicitParam(name = "wapModel", value = "支付参数对象", required = true, dataType = "AlipayTradeWapPayModel")
     @PostMapping("alipayTradeWapPay") //正式调用
     public AjaxResult alipayTradeWapPay(@RequestBody AlipayTradeWapPayModel wapModel) {
         return alipayService.alipayTradeWapPay(wapModel);
     }
 
+    @ApiOperation(value="支付宝手机网站支付", notes="测试专用")
+//    @ApiImplicitParam(name = "alipayTradeWapPay", value = "测试专用", required = true, dataType = "AlipayTradeWapPayModel")
     @GetMapping("alipayTradeWapPay") //测试专用
     public String alipayTradeWapPay() {
         AlipayTradeWapPayModel orderDto = new AlipayTradeWapPayModel();
@@ -71,7 +79,8 @@ public class AlipayController {
      * Author: 梁乐乐
      * Date: Created in 2018/5/20 11:07
      */
-
+    @ApiOperation(value="支付宝网站支付", notes="支付宝网站支付")
+    @ApiImplicitParam(name = "model", value = "支付宝网站支付对象", required = true, dataType = "AlipayTradePagePayModel")
     @PostMapping("alipayTradePagePay") //正式调用
     public AjaxResult alipayTradePagePay(@RequestBody AlipayTradePagePayModel model) {
         return alipayService.alipayTradePagePay(model);
@@ -106,6 +115,8 @@ public class AlipayController {
      * @Author: 梁乐乐
      * @Date: Created in 2018/5/21 22:10
      */
+    @ApiOperation(value="交易退款查询", notes="交易退款查询")
+    @ApiImplicitParam(name = "fasModel", value = "交易退款查询对象", required = true, dataType = "AlipayTradeFastpayRefundQueryModel")
     @PostMapping("alipayTradeFastpayRefundQuery")
     public AjaxResult alipayTradeFastpayRefundQuery(@RequestBody AlipayTradeFastpayRefundQueryModel fasModel) {
         return alipayService.alipayTradeFastpayRefundQuery(fasModel);
@@ -127,6 +138,8 @@ public class AlipayController {
      * @Author: 梁乐乐
      * @Date: Created in 2018/5/22 18:47
      */
+    @ApiOperation(value="支付宝订单查询接口", notes="支付宝订单查询接口")
+    @ApiImplicitParam(name = "queryModel", value = "支付宝订单查询接口对象", required = true, dataType = "AlipayFundTransOrderQueryModel")
     @PostMapping("alipayFundTransOrderQuery")
     public AjaxResult alipayFundTransOrderQuery(@RequestBody AlipayFundTransOrderQueryModel queryModel) {
         return alipayService.alipayFundTransOrderQuery(queryModel);
@@ -147,6 +160,8 @@ public class AlipayController {
      * @Author: 梁乐乐
      * @Date: Created in 2018/5/21 22:45
      */
+    @ApiOperation(value="支付宝退款接口", notes="支付宝退款接口")
+    @ApiImplicitParam(name = "model", value = "支付宝退款接口对象", required = true, dataType = "AlipayTradeRefundApplyModel")
     @PostMapping("alipayTradeRefund")
     public AjaxResult alipayTradeRefund(@RequestBody AlipayTradeRefundApplyModel model) {
         return alipayService.alipayTradeRefund(model);
@@ -172,6 +187,8 @@ public class AlipayController {
      * @Author: 梁乐乐
      * @Date: Created in 2018/5/21 22:45AlipayTradePrecreateRequest
      */
+    @ApiOperation(value="支付宝交易关闭接口", notes="支付宝交易关闭接口")
+    @ApiImplicitParam(name = "model", value = "支付宝交易关闭对象", required = true, dataType = "AlipayTradeCloseModel")
     @PostMapping("alipayTradeClose")
     public AjaxResult alipayTradeClose(@RequestBody AlipayTradeCloseModel model) {
         return alipayService.alipayTradeClose(model);
@@ -194,6 +211,8 @@ public class AlipayController {
      * @Author: 梁乐乐
      * @Date: Created in 2018/5/21 22:45
      */
+    @ApiOperation(value="支付宝统一收单交易创建接口", notes="支付宝统一收单交易创建接口")
+    @ApiImplicitParam(name = "model", value = "支付宝统一收单交易创建对象", required = true, dataType = "AlipayTradeCreateModel")
     @PostMapping("alipayTradeCreate")
     public AjaxResult alipayTradeCreate(@RequestBody AlipayTradeCreateModel model) {
         return alipayService.alipayTradeCreate(model);
@@ -221,13 +240,19 @@ public class AlipayController {
      * @param response
      * @return
      */
+    @ApiOperation(value="异步通知付款状态的", notes="异步通知付款状态的")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "request", value = "回调对象", required = true, dataType = "HttpServletRequest"),
+            @ApiImplicitParam(name = "response", value = "返回对象", required = true, dataType = "HttpServletResponse")
+    })
     @GetMapping("alipayNotify")
     public AjaxResult notify(HttpServletRequest request,
                              HttpServletResponse response) throws AlipayApiException {
         return alipayService.alipayNotify(request.getParameterMap());
     }
 
-
+    @ApiOperation(value="支付宝手机网站支付", notes="支付宝手机网站支付")
+    @ApiImplicitParam(name = "request", value = "获取支付宝openid", required = true, dataType = "HttpServletRequest")
     @GetMapping("aliGetToken")
     public AjaxResult aliGetToken(HttpServletRequest request) throws IOException {
 //        alipayService.aliGetToken();
@@ -250,7 +275,8 @@ public class AlipayController {
         return result;
 //        return "<a href=\"alipays://platformapi/startapp?appId=20000067&url=" + URLEncoder.encode(AlipayConfig.login_url)+"\">点击此处拉起支付宝进行授权</a>";
     }
-
+    @ApiOperation(value="根据openid获取token", notes="根据openid获取token")
+    @ApiImplicitParam(name = "authCode", value = "openid", required = true, dataType = "String")
     @GetMapping("alipayToken")
     public AjaxResult getAlipayCodeToToken(String authCode) {
 
@@ -275,7 +301,8 @@ public class AlipayController {
         }
         return result;
     }
-
+    @ApiOperation(value="alipayTokenUserInfo", notes="返回支付宝用户信息")
+    @ApiImplicitParam(name = "token", value = "支付宝token", required = true, dataType = "String")
     @GetMapping("alipayTokenUserInfo")
     public AjaxResult alipayToken(String token) {
 
